@@ -1,3 +1,5 @@
+import { Toggle } from "./Toggle.js";
+
 const dictionary = {
     en: {
         "switch-theme": "Change theme",
@@ -37,44 +39,23 @@ const dictionary = {
     },
 };
 
-class Translator {
+class Translator extends Toggle {
     constructor(dictionary) {
-        this.languages = ["en", "es"];
-        this.index = 1;
+        super(["en", "es"]);
         this.dictionary = dictionary;
-        this.setLanguage();
         this.elements = document.querySelectorAll("[translate-element]");
     }
 
-    getNextIndex() {
-        return (this.index + 1) % this.languages.length;
-    }
-
-    setIndex(index) {
-        this.index = index;
-    }
-
-    setLanguage() {
-        this.language = this.languages[this.index];
-    }
-
-    updateLanguage(element) {
-        element.setAttribute("lang-name", this.language);
-    }
-
     buttonListener(button, element) {
+        super.buttonListener(button, element, "lang-name");
         button.addEventListener("click", () => {
-            const index = this.getNextIndex();
-            this.setIndex(index);
-            this.setLanguage();
-            this.updateLanguage(element);
             this.applyLanguage();
         });
     }
 
     applyLanguage() {
         this.elements.forEach((element) => {
-            element.textContent = this.dictionary[this.language][element.id];
+            element.textContent = this.dictionary[this.state][element.id];
         });
     }
 }
