@@ -2,6 +2,7 @@ import { Toggle } from "./Toggle.js";
 
 const dictionary = {
     en: {
+        "title-page": "Portfolio",
         "switch-theme": "Change theme",
         "switch-language": "Change language",
         greeting: "Hello",
@@ -20,6 +21,7 @@ const dictionary = {
         "contact-me": "Contact me",
     },
     es: {
+        "title-page": "Portafolio",
         "switch-theme": "Cambiar tema",
         "switch-language": "Cambiar idioma",
         greeting: "Hola",
@@ -41,9 +43,10 @@ const dictionary = {
 
 class Translator extends Toggle {
     constructor(dictionary) {
-        super(["en", "es"]);
+        super(["es", "en"]);
         this.dictionary = dictionary;
         this.elements = document.querySelectorAll("[translate-element]");
+        this.customElements = document.querySelectorAll("[lang-text]");
     }
 
     buttonListener(button, element) {
@@ -54,8 +57,20 @@ class Translator extends Toggle {
     }
 
     applyLanguage() {
+        // native elements just change their text content
         this.elements.forEach((element) => {
             element.textContent = this.dictionary[this.state][element.id];
+        });
+
+        // custom elements need to change their attributes
+        this.customElements.forEach((element) => {
+            const translateElements = element.shadowRoot.querySelectorAll(
+                "[translate-element]"
+            );
+            translateElements.forEach((translateElement) => {
+                translateElement.textContent =
+                    this.dictionary[this.state][translateElement.id];
+            });
         });
     }
 }
